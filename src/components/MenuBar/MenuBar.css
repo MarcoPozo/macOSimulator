@@ -1,0 +1,131 @@
+.menubar {
+  position: fixed;
+  inset: 0 0 auto 0;
+
+  padding: 0 12px;
+  z-index: var(--z-menubar);
+  height: var(--menubar-height);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  backdrop-filter: blur(18px);
+  background: var(--menubar-bg);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.menubar__left,
+.menubar__right {
+  align-items: center;
+  display: flex;
+  min-width: 0;
+  gap: 10px;
+}
+
+.menubar__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 22px;
+  padding: 0 6px;
+  height: 22px;
+
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+
+  cursor: default;
+  border-radius: 5px;
+}
+
+.menubar__btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.menubar__btn:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.menubar__icon {
+  width: 22px;
+  padding: 0;
+}
+
+.menubar__icon svg,
+.menubar__icon img {
+  width: auto;
+  height: 16px;
+  display: block;
+}
+
+.menubar__icon svg {
+  fill: currentColor;
+}
+
+/* Apple Icon */
+.menubar__appleImg {
+  width: 14px;
+  height: 14px;
+  display: block;
+  opacity: 0.95;
+}
+
+.menubar__item {
+  font-size: 12.5px;
+  white-space: nowrap;
+  color: var(--color-text);
+}
+
+.menubar__item--bold {
+  font-weight: 900;
+  color: var(--color-text);
+}
+
+/* Reloj */
+.menubar__clock {
+  opacity: 0.95;
+  font-weight: 500;
+  padding-left: 2px;
+  font-size: 12.5px;
+  white-space: nowrap;
+  color: var(--color-text);
+}
+
+/* Bateria */
+.menubar__battery {
+  gap: 6px;
+  align-items: center;
+  display: inline-flex;
+
+  height: 22px;
+  padding: 0 6px;
+  color: var(--color-text);
+}
+
+.menubar__batteryPct {
+  opacity: 0.95;
+  line-height: 1;
+  font-weight: 500;
+  font-size: 12.5px;
+}
+
+.menubar__batteryPill {
+  width: 26px;
+  height: 12px;
+  position: relative;
+
+  overflow: hidden;
+  border-radius: 3px;
+  border: 1px solid var(--color-text-muted);
+}
+
+.menubar__batteryLevel {
+  background: #35c759;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  top: 0;
+  border-radius: 3px;
+}
