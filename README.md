@@ -1,2 +1,2 @@
-# macOs Simulator
+# macOSimulator
 - ¡Hola! Estoy usando React 😀
