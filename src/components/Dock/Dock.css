@@ -1,0 +1,70 @@
+.dock {
+  display: flex;
+  align-items: center;
+
+  position: fixed;
+  left: 50%;
+  bottom: 3%;
+  z-index: 10;
+  transform: translateX(-50%);
+
+  height: 65px;
+  padding: 0.2rem 0.5rem 0;
+
+  border-radius: 14px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.555);
+}
+
+/* Iconos */
+.dock .icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+
+  border: none;
+  outline: none;
+  cursor: default;
+
+  background: none;
+  -webkit-tap-highlight-color: transparent;
+
+  transition: all 0.3s;
+}
+
+.dock .icon img {
+  width: 3.6rem;
+  user-select: none;
+  pointer-events: none;
+  transform: translateY(-2.5px);
+  transition: 0.2s;
+}
+
+.dock .icon:hover img {
+  width: 7.1rem;
+  margin-bottom: 40px;
+}
+
+.dock .icon:hover + .icon img {
+  width: 5.6rem;
+  margin-bottom: 25px;
+}
+
+.dock .icon:has(+ .icon:hover) img {
+  width: 5.6rem;
+  margin-bottom: 25px;
+}
+
+.dock .icon:active img {
+  filter: brightness(0.6) drop-shadow(0 0 10px #2c2c2c);
+}
+
+/* Responsive */
+@media screen and (max-width: 900px) {
+  .dock {
+    border-radius: 20px;
+  }
+}
