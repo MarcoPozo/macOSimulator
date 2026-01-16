@@ -42,6 +42,8 @@ export default function Dock() {
           aria-label={item.label}
           type="button">
           <img src={item.src} alt={`${item.label} Logo`} draggable="false" />
+
+          <span className="dock-tooltip">{item.label}</span>
         </button>
       ))}
     </div>
