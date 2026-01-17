@@ -1,5 +1,6 @@
 import { LuX, LuMinus, LuPlus } from "react-icons/lu";
 import "./Window.css";
+import { useWindowDrag } from "../../hooks/useWindowDrag";
 
 export default function Window({
   title = "Finder",
@@ -7,17 +8,27 @@ export default function Window({
   height = 360,
   x = 120,
   y = 120,
+  stageRef,
 }) {
+  const drag = useWindowDrag({
+    initialX: x,
+    initialY: y,
+    width,
+    height,
+    margin: 10,
+    containerRef: stageRef,
+  });
+
   return (
     <section
       className="window"
       style={{
         width,
         height,
-        transform: `translate(${x}px, ${y}px)`,
+        transform: `translate(${drag.x}px, ${drag.y}px)`,
       }}
       aria-label={`Ventana ${title}`}>
-      <header className="window__titlebar">
+      <header className="window__titlebar" {...drag.bindTitlebar}>
         <div className="window__traffic" aria-label="Controles de ventana">
           <button
             className="window__dotBtn window__dotBtn--red"
