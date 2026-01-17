@@ -1,6 +1,5 @@
 .window {
   position: absolute;
-
   border-radius: 12px;
   overflow: hidden;
 
@@ -14,7 +13,7 @@
   transform-origin: top left;
 }
 
-/* Window Bar */
+/* Barra  */
 .window__titlebar {
   height: 36px;
 
@@ -34,28 +33,87 @@
   gap: 8px;
 }
 
-.window__dot {
+/* Botones */
+.window__dotBtn {
   width: 12px;
   height: 12px;
   border-radius: 999px;
 
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset,
+  border: 0;
+  padding: 0;
+  margin: 0;
+
+  display: grid;
+  place-items: center;
+
+  cursor: default;
+  background: transparent;
+
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
     0 0 0 1px rgba(0, 0, 0, 0.35) inset;
+
+  transition:
+    transform 120ms ease,
+    filter 120ms ease;
+
+  -webkit-tap-highlight-color: transparent;
 }
 
-.window__dot--red {
+/* Colores Iconos */
+.window__dotBtn--red {
   background: #ff5f57;
+  --dot-ink: rgba(150, 18, 14, 0.9);
 }
 
-.window__dot--yellow {
+.window__dotBtn--yellow {
   background: #febc2e;
+  --dot-ink: rgba(130, 85, 0, 0.9);
 }
 
-.window__dot--green {
+.window__dotBtn--green {
   background: #28c840;
+  --dot-ink: rgba(0, 85, 28, 0.9);
 }
 
-/* Title */
+/* Relieve */
+.window__dotIcon {
+  width: 8px;
+  height: 8px;
+
+  color: var(--dot-ink);
+
+  opacity: 0;
+  transform: scale(0.85);
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+
+  pointer-events: none;
+
+  filter: drop-shadow(0 -0.35px 0 rgba(255, 255, 255, 0.45))
+    drop-shadow(0 0.55px 0 rgba(0, 0, 0, 0.35));
+}
+
+.window__traffic:hover .window__dotIcon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.window__dotBtn:hover {
+  filter: brightness(1.08) saturate(1.05);
+}
+
+.window__dotBtn:active {
+  transform: scale(0.92);
+}
+
+.window__dotBtn:active .window__dotIcon {
+  filter: drop-shadow(0 0.35px 0 rgba(255, 255, 255, 0.35))
+    drop-shadow(0 -0.55px 0 rgba(0, 0, 0, 0.35));
+}
+
+/* Título */
 .window__title {
   justify-self: center;
 
@@ -75,7 +133,7 @@
   justify-self: end;
 }
 
-/* Content */
+/* Contenido */
 .window__content {
   height: calc(100% - 36px);
   background: rgba(0, 0, 0, 0.12);

@@ -1,3 +1,4 @@
+import { LuX, LuMinus, LuPlus } from "react-icons/lu";
 import "./Window.css";
 
 export default function Window({
@@ -17,13 +18,27 @@ export default function Window({
       }}
       aria-label={`Ventana ${title}`}>
       <header className="window__titlebar">
-        <div className="window__traffic">
-          <span className="window__dot window__dot--red" aria-hidden="true" />
-          <span
-            className="window__dot window__dot--yellow"
-            aria-hidden="true"
-          />
-          <span className="window__dot window__dot--green" aria-hidden="true" />
+        <div className="window__traffic" aria-label="Controles de ventana">
+          <button
+            className="window__dotBtn window__dotBtn--red"
+            type="button"
+            aria-label="Cerrar (visual)">
+            <LuX className="window__dotIcon" />
+          </button>
+
+          <button
+            className="window__dotBtn window__dotBtn--yellow"
+            type="button"
+            aria-label="Minimizar (visual)">
+            <LuMinus className="window__dotIcon" />
+          </button>
+
+          <button
+            className="window__dotBtn window__dotBtn--green"
+            type="button"
+            aria-label="Maximizar (visual)">
+            <LuPlus className="window__dotIcon" />
+          </button>
         </div>
 
         <div className="window__title" title={title}>
