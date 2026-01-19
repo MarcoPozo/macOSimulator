@@ -1,0 +1,45 @@
+.settings__grid {
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 12px;
+}
+
+.settings__thumb {
+  border: 0;
+  padding: 0;
+  cursor: default;
+  background: transparent;
+
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+
+  transition:
+    transform 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.settings__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+.settings__thumb:hover {
+  transform: scale(1.02);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.settings__thumb--active {
+  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+}

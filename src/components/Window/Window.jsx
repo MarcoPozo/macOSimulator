@@ -106,7 +106,7 @@ export default function Window({
           <button
             className="window__dotBtn window__dotBtn--green"
             type="button"
-            aria-label="Maximizar (visual)"
+            aria-label="Maximizar"
             onPointerDown={(e) => e.stopPropagation()}>
             <LuPlus className="window__dotIcon" />
           </button>
