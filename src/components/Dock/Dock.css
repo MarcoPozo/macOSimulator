@@ -63,6 +63,28 @@
   filter: brightness(0.6) drop-shadow(0 0 10px #2c2c2c);
 }
 
+/* Estado */
+.dock-dot {
+  position: absolute;
+  left: 50%;
+  bottom: 1px;
+  transform: translateX(-50%);
+
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.icon--minimized .dock-dot {
+  opacity: 1;
+}
+
 /* Tooltip */
 .dock-tooltip {
   position: absolute;
@@ -86,7 +108,9 @@
   pointer-events: none;
 
   opacity: 0;
-  transition: opacity 140ms ease, transform 140ms ease;
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
 }
 
 .dock .icon:hover .dock-tooltip {

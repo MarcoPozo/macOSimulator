@@ -32,20 +32,28 @@ const DOCK_ITEMS = [
   { id: "trash", label: "Papelera", src: trash },
 ];
 
-export default function Dock() {
+export default function Dock({ onItemClick, appState = {} }) {
   return (
     <div className="dock" aria-label="Dock">
-      {DOCK_ITEMS.map((item) => (
-        <button
-          key={item.id}
-          className="icon"
-          aria-label={item.label}
-          type="button">
-          <img src={item.src} alt={`${item.label} Logo`} draggable="false" />
+      {DOCK_ITEMS.map((item) => {
+        const state = appState[item.id];
+        const isMinimized = !!state?.open && !!state?.minimized;
 
-          <span className="dock-tooltip">{item.label}</span>
-        </button>
-      ))}
+        return (
+          <button
+            key={item.id}
+            className={`icon ${isMinimized ? "icon--minimized" : ""}`}
+            aria-label={item.label}
+            type="button"
+            onClick={() => onItemClick?.(item.id)}>
+            <img src={item.src} alt={`${item.label} Logo`} draggable="false" />
+
+            <span className="dock-dot" aria-hidden="true" />
+
+            <span className="dock-tooltip">{item.label}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }

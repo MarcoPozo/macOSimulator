@@ -9,19 +9,23 @@ export default function Window({
   x = 120,
   y = 120,
   stageRef,
+
+  minimized = false,
+  onClose,
+  onMinimize,
 }) {
   const drag = useWindowDrag({
     initialX: x,
     initialY: y,
     width,
-    height,
-    margin: 10,
+    edgePadding: 120,
+    overflow: 30,
     containerRef: stageRef,
   });
 
   return (
     <section
-      className="window"
+      className={`window ${minimized ? "window--minimized" : ""}`}
       style={{
         width,
         height,
@@ -33,14 +37,16 @@ export default function Window({
           <button
             className="window__dotBtn window__dotBtn--red"
             type="button"
-            aria-label="Cerrar (visual)">
+            aria-label="Cerrar"
+            onClick={onClose}>
             <LuX className="window__dotIcon" />
           </button>
 
           <button
             className="window__dotBtn window__dotBtn--yellow"
             type="button"
-            aria-label="Minimizar (visual)">
+            aria-label="Minimizar"
+            onClick={onMinimize}>
             <LuMinus className="window__dotIcon" />
           </button>
 
