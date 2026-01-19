@@ -1,0 +1,26 @@
+{
+  "photos": [
+    {
+      "id": "p1",
+      "src": "photos/0001.webp"
+    },
+    {
+      "id": "p2",
+      "src": "photos/0002.webp"
+    },
+    {
+      "id": "p3",
+      "src": "photos/0003.webp"
+    }
+  ],
+  "videos": [
+    {
+      "id": "v1",
+      "src": "videos/0001.mp4"
+    },
+    {
+      "id": "v2",
+      "src": "videos/0002.mp4"
+    }
+  ]
+}
