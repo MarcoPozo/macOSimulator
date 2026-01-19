@@ -17,7 +17,7 @@
   display: none;
 }
 
-/* Barra  */
+/* Topbar */
 .window__titlebar {
   height: 36px;
   cursor: grab;
@@ -41,7 +41,6 @@
   gap: 8px;
 }
 
-/* Botones */
 .window__dotBtn {
   width: 12px;
   height: 12px;
@@ -68,6 +67,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Colores */
 .window__dotBtn--red {
   background: #ff5f57;
   --dot-ink: rgba(150, 18, 14, 0.9);
@@ -83,6 +83,7 @@
   --dot-ink: rgba(0, 85, 28, 0.9);
 }
 
+/* Iconos internos */
 .window__dotIcon {
   width: 8px;
   height: 8px;
@@ -119,9 +120,10 @@
     drop-shadow(0 -0.55px 0 rgba(0, 0, 0, 0.35));
 }
 
-/* Titulo */
+/* Title */
 .window__title {
   justify-self: center;
+
   font-size: 12.5px;
   font-weight: 600;
   letter-spacing: 0.2px;
@@ -138,7 +140,59 @@
   justify-self: end;
 }
 
-.window__content {
+/* Body layout */
+.window__body {
+  display: grid;
+  grid-template-columns: 160px 1fr;
   height: calc(100% - 36px);
+}
+
+/* Sidebar */
+.window__sidebar {
+  padding: 10px 6px;
+
   background: rgba(0, 0, 0, 0.12);
+  border-right: 1px solid var(--glass-border);
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.window__sideItem {
+  height: 28px;
+  padding: 0 10px;
+
+  display: flex;
+  align-items: center;
+
+  border-radius: 6px;
+  border: 0;
+  background: transparent;
+
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    background 120ms ease,
+    color 120ms ease;
+}
+
+.window__sideItem:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.window__sideItem--active {
+  background: rgba(255, 255, 255, 0.22);
+  font-weight: 600;
+}
+
+/* Content */
+.window__content {
+  background: rgba(0, 0, 0, 0.08);
 }
