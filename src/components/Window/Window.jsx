@@ -38,7 +38,11 @@ export default function Window({
             className="window__dotBtn window__dotBtn--red"
             type="button"
             aria-label="Cerrar"
-            onClick={onClose}>
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose?.();
+            }}>
             <LuX className="window__dotIcon" />
           </button>
 
@@ -46,7 +50,11 @@ export default function Window({
             className="window__dotBtn window__dotBtn--yellow"
             type="button"
             aria-label="Minimizar"
-            onClick={onMinimize}>
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              onMinimize?.();
+            }}>
             <LuMinus className="window__dotIcon" />
           </button>
 
