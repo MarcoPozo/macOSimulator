@@ -98,8 +98,8 @@ async function main() {
 
   fs.writeFileSync(JSON_OUT, JSON.stringify(data, null, 2), "utf-8");
 
-  console.log(`✔ Wallpapers generados: ${data.length}`);
-  console.log(`✔ JSON: ${path.relative(process.cwd(), JSON_OUT)}`);
+  console.log(`Wallpapers generados: ${data.length}`);
+  console.log(`JSON: ${path.relative(process.cwd(), JSON_OUT)}`);
 }
 
 main().catch((err) => {
