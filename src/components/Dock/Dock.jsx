@@ -35,25 +35,32 @@ export default function Dock({ onItemClick, appState = {} }) {
     <div className="dock" aria-label="Dock">
       {DOCK_ITEMS.map((item) => {
         const state = appState[item.id];
-        const isOpen = !!state?.open;
-        const isMinimized = !!state?.open && !!state?.minimized;
+        const isOpen = Boolean(state?.open);
+        const isMinimized = Boolean(state?.open && state?.minimized);
+
+        const itemClass = [
+          "dockItem",
+          isOpen && "dockItem--open",
+          isMinimized && "dockItem--minimized",
+        ]
+          .filter(Boolean)
+          .join(" ");
 
         return (
-          <button
-            key={item.id}
-            className={`icon
-              ${isOpen ? "icon--open" : ""}
-              ${isMinimized ? "icon--minimized" : ""}
-            `}
-            aria-label={item.label}
-            type="button"
-            onClick={() => onItemClick?.(item.id)}>
-            <img src={item.src} alt={`${item.label} Logo`} draggable="false" />
+          <div key={item.id} className={itemClass}>
+            <div className="dockItem__dotLayer" aria-hidden="true">
+              <span className="dock-dot" />
+            </div>
 
-            <span className="dock-dot" aria-hidden="true" />
-
-            <span className="dock-tooltip">{item.label}</span>
-          </button>
+            <button
+              className="icon"
+              type="button"
+              aria-label={item.label}
+              onClick={() => onItemClick?.(item.id)}>
+              <img src={item.src} alt={item.label} draggable="false" />
+              <span className="dock-tooltip">{item.label}</span>
+            </button>
+          </div>
         );
       })}
     </div>
