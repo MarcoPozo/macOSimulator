@@ -35,12 +35,16 @@ export default function Dock({ onItemClick, appState = {} }) {
     <div className="dock" aria-label="Dock">
       {DOCK_ITEMS.map((item) => {
         const state = appState[item.id];
+        const isOpen = !!state?.open;
         const isMinimized = !!state?.open && !!state?.minimized;
 
         return (
           <button
             key={item.id}
-            className={`icon ${isMinimized ? "icon--minimized" : ""}`}
+            className={`icon
+              ${isOpen ? "icon--open" : ""}
+              ${isMinimized ? "icon--minimized" : ""}
+            `}
             aria-label={item.label}
             type="button"
             onClick={() => onItemClick?.(item.id)}>
