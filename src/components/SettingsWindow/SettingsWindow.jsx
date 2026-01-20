@@ -2,8 +2,8 @@ import "../Window/Window.css";
 import "./SettingsWindow.css";
 import { useMemo } from "react";
 import { LuX, LuMinus, LuPlus } from "react-icons/lu";
-import wallpapers from "../../assets/wallpapers/wallpapers.json";
 import { useWindowDrag } from "../../hooks/useWindowDrag";
+import wallpapers from "../../assets/wallpapers/wallpapers.json";
 
 export default function SettingsWindow({
   title = "Configuración",
@@ -113,11 +113,7 @@ export default function SettingsWindow({
                     }`}
                     onClick={() => onSelectWallpaper?.(wp.src)}
                     aria-label={`Seleccionar ${wp.id}`}>
-                    <img
-                      src={`/src/assets/${wp.src}`}
-                      alt=""
-                      draggable="false"
-                    />
+                    <img src={`/${wp.src}`} alt="" draggable="false" />
                   </button>
                 );
               })}

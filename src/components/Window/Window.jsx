@@ -85,7 +85,6 @@ export default function Window({
         e.stopPropagation();
         onFocus?.();
       }}>
-
       <div className="window__frame">
         <header className="window__titlebar" {...drag.bindTitlebar}>
           <div className="window__traffic">
@@ -158,14 +157,14 @@ export default function Window({
                     {isVideo ? (
                       <video
                         className="window__thumbMedia"
-                        src={`/src/assets/multimedia/${item.src}`}
+                        src={`/multimedia/${item.src}`}
                         muted
                         preload="metadata"
                       />
                     ) : (
                       <img
                         className="window__thumbMedia"
-                        src={`/src/assets/multimedia/${item.src}`}
+                        src={`/multimedia/${item.src}`}
                         alt=""
                         loading="lazy"
                       />
@@ -190,14 +189,14 @@ export default function Window({
 
                     return isVideo ? (
                       <video
-                        src={`/src/assets/multimedia/${current.src}`}
+                        src={`/multimedia/${current.src}`}
                         controls
                         autoPlay
                         className="viewer__mediaEl"
                       />
                     ) : (
                       <img
-                        src={`/src/assets/multimedia/${current.src}`}
+                        src={`/multimedia/${current.src}`}
                         alt=""
                         className="viewer__mediaEl"
                       />
