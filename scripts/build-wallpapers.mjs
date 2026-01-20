@@ -3,7 +3,7 @@ import path from "path";
 import sharp from "sharp";
 
 const OUT_DIR = path.resolve("public/wallpapers");
-const UPLOADS_DIR = path.resolve("public/_uploads/wallpapers");
+const UPLOADS_DIR = path.resolve("public/_uploads/_wallpapers");
 const JSON_OUT = path.join(OUT_DIR, "wallpapers.json");
 
 const IMAGE_EXTS = new Set([
