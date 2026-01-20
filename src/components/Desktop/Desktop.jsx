@@ -66,7 +66,6 @@ export default function Desktop() {
     }
   };
 
-  /* Render */
   return (
     <main
       className="desktop"
@@ -94,16 +93,17 @@ export default function Desktop() {
         {/* Settings */}
         {settings.open && (
           <SettingsWindow
-            x={180}
-            y={140}
-            width={640}
-            height={420}
+            title="Configuración"
+            x={540}
+            y={120}
+            width={560}
+            height={360}
             stageRef={stageRef}
             minimized={settings.minimized}
             onClose={handleCloseSettings}
             onMinimize={handleMinimizeSettings}
             onSelectWallpaper={handleWallpaperChange}
-            activeWallpaper={wallpaper}
+            currentWallpaper={wallpaper}
           />
         )}
       </div>

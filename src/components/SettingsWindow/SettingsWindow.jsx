@@ -9,12 +9,14 @@ export default function SettingsWindow({
   title = "Configuración",
   width = 560,
   height = 360,
-  x = 180,
-  y = 140,
+  x = 140,
+  y = 120,
   stageRef,
+
   minimized = false,
   onClose,
   onMinimize,
+
   onSelectWallpaper,
   currentWallpaper,
 }) {
@@ -27,7 +29,7 @@ export default function SettingsWindow({
     containerRef: stageRef,
   });
 
-  const items = useMemo(() => wallpapers, []);
+  const items = useMemo(() => wallpapers ?? [], []);
 
   return (
     <section
@@ -36,25 +38,38 @@ export default function SettingsWindow({
         width,
         height,
         transform: `translate(${drag.x}px, ${drag.y}px)`,
-      }}>
+      }}
+      aria-label={`Ventana ${title}`}>
       <header className="window__titlebar" {...drag.bindTitlebar}>
         <div className="window__traffic">
           <button
             className="window__dotBtn window__dotBtn--red"
+            type="button"
+            aria-label="Cerrar"
             onPointerDown={(e) => e.stopPropagation()}
-            onClick={onClose}>
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose?.();
+            }}>
             <LuX className="window__dotIcon" />
           </button>
 
           <button
             className="window__dotBtn window__dotBtn--yellow"
+            type="button"
+            aria-label="Minimizar"
             onPointerDown={(e) => e.stopPropagation()}
-            onClick={onMinimize}>
+            onClick={(e) => {
+              e.stopPropagation();
+              onMinimize?.();
+            }}>
             <LuMinus className="window__dotIcon" />
           </button>
 
           <button
             className="window__dotBtn window__dotBtn--green"
+            type="button"
+            aria-label="Maximizar"
             onPointerDown={(e) => e.stopPropagation()}>
             <LuPlus className="window__dotIcon" />
           </button>
@@ -64,13 +79,18 @@ export default function SettingsWindow({
         <div className="window__spacer" />
       </header>
 
+      {/* Body */}
       <div className="window__body">
-        <aside className="window__sidebar">
-          <button className="window__sideItem window__sideItem--active">
+        {/* Sidebar */}
+        <aside className="window__sidebar" aria-label="Secciones">
+          <button
+            type="button"
+            className="window__sideItem window__sideItem--active">
             Fondos
           </button>
         </aside>
 
+        {/* Content */}
         <section className="window__content">
           <div className="settings__grid">
             {items.map((wp) => {
@@ -79,10 +99,12 @@ export default function SettingsWindow({
               return (
                 <button
                   key={wp.id}
+                  type="button"
                   className={`settings__thumb ${
                     isActive ? "settings__thumb--active" : ""
                   }`}
-                  onClick={() => onSelectWallpaper(wp.src)}>
+                  onClick={() => onSelectWallpaper?.(wp.src)}
+                  aria-label={`Seleccionar ${wp.id}`}>
                   <img src={`/src/assets/${wp.src}`} alt="" draggable="false" />
                 </button>
               );
