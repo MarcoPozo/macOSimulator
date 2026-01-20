@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "wallpapers": "node scripts/build-wallpapers.mjs",
+    "media": "node scripts/build-media.mjs"
   },
   "dependencies": {
     "react": "^19.2.0",
