@@ -27,6 +27,9 @@ export default function Window({
   minimized = false,
   onClose,
   onMinimize,
+  isActive = false,
+  zIndex = 1,
+  onFocus,
 }) {
   const [navLock, setNavLock] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
@@ -46,7 +49,6 @@ export default function Window({
 
     setNavLock(true);
     setViewer((v) => ({ ...v, index: v.index - 1 }));
-
     setTimeout(() => setNavLock(false), 120);
   };
 
@@ -55,7 +57,6 @@ export default function Window({
 
     setNavLock(true);
     setViewer((v) => ({ ...v, index: v.index + 1 }));
-
     setTimeout(() => setNavLock(false), 120);
   };
 
@@ -70,173 +71,182 @@ export default function Window({
 
   return (
     <section
-      className={`window ${minimized ? "window--minimized" : ""}`}
+      className={`window ${minimized ? "window--minimized" : ""} ${
+        isActive ? "window--active" : "window--inactive"
+      }`}
       style={{
         width,
         height,
+        zIndex,
         transform: `translate(${drag.x}px, ${drag.y}px)`,
       }}
-      aria-label={`Ventana ${title}`}>
-      <header className="window__titlebar" {...drag.bindTitlebar}>
-        <div className="window__traffic">
-          <button
-            className="window__dotBtn window__dotBtn--red"
-            type="button"
-            aria-label="Cerrar"
-            onPointerDown={(e) => e.stopPropagation()}
-            onClick={(e) => {
-              e.stopPropagation();
-              onClose?.();
-            }}>
-            <LuX className="window__dotIcon" />
-          </button>
+      aria-label={`Ventana ${title}`}
+      onMouseDown={(e) => {
+        e.stopPropagation();
+        onFocus?.();
+      }}>
 
-          <button
-            className="window__dotBtn window__dotBtn--yellow"
-            type="button"
-            aria-label="Minimizar"
-            onPointerDown={(e) => e.stopPropagation()}
-            onClick={(e) => {
-              e.stopPropagation();
-              onMinimize?.();
-            }}>
-            <LuMinus className="window__dotIcon" />
-          </button>
+      <div className="window__frame">
+        <header className="window__titlebar" {...drag.bindTitlebar}>
+          <div className="window__traffic">
+            <button
+              className="window__dotBtn window__dotBtn--red"
+              type="button"
+              aria-label="Cerrar"
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose?.();
+              }}>
+              <LuX className="window__dotIcon" />
+            </button>
 
-          <button
-            className="window__dotBtn window__dotBtn--green"
-            type="button"
-            aria-label="Maximizar"
-            onPointerDown={(e) => e.stopPropagation()}>
-            <LuPlus className="window__dotIcon" />
-          </button>
+            <button
+              className="window__dotBtn window__dotBtn--yellow"
+              type="button"
+              aria-label="Minimizar"
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                onMinimize?.();
+              }}>
+              <LuMinus className="window__dotIcon" />
+            </button>
+
+            <button
+              className="window__dotBtn window__dotBtn--green"
+              type="button"
+              aria-label="Maximizar"
+              onPointerDown={(e) => e.stopPropagation()}>
+              <LuPlus className="window__dotIcon" />
+            </button>
+          </div>
+
+          <div className="window__title">{title}</div>
+          <div className="window__spacer" />
+        </header>
+
+        <div className="window__body">
+          {/* Sidebar */}
+          <aside className="window__sidebar" aria-label="Secciones">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                className={`window__sideItem ${
+                  activeTab === tab.id ? "window__sideItem--active" : ""
+                }`}
+                onClick={() => setActiveTab(tab.id)}>
+                {tab.label}
+              </button>
+            ))}
+          </aside>
+
+          {/* Content */}
+          <section className="window__content">
+            <div className="window__grid">
+              {items.map((item, i) => {
+                const isVideo = item.src.startsWith("videos/");
+
+                return (
+                  <button
+                    key={item.id}
+                    className="window__thumb"
+                    type="button"
+                    onClick={() => openViewer(i)}
+                    aria-label={`Abrir ${item.id}`}>
+                    {isVideo ? (
+                      <video
+                        className="window__thumbMedia"
+                        src={`/src/assets/multimedia/${item.src}`}
+                        muted
+                        preload="metadata"
+                      />
+                    ) : (
+                      <img
+                        className="window__thumbMedia"
+                        src={`/src/assets/multimedia/${item.src}`}
+                        alt=""
+                        loading="lazy"
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
         </div>
 
-        <div className="window__title">{title}</div>
-        <div className="window__spacer" />
-      </header>
+        {viewer.open &&
+          createPortal(
+            <div className="viewer" aria-modal="true" role="dialog">
+              <div className="viewer__backdrop" onClick={closeViewer} />
 
-      {/* Body */}
-      <div className="window__body">
-        {/* Sidebar */}
-        <aside className="window__sidebar" aria-label="Secciones">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              className={`window__sideItem ${
-                activeTab === tab.id ? "window__sideItem--active" : ""
-              }`}
-              onClick={() => setActiveTab(tab.id)}>
-              {tab.label}
-            </button>
-          ))}
-        </aside>
+              <div className="viewer__content" role="document">
+                <div className="viewer__media">
+                  {(() => {
+                    const current = items[viewer.index];
+                    const isVideo = current.src.startsWith("videos/");
 
-        {/* Content */}
-        <section className="window__content">
-          <div className="window__grid">
-            {items.map((item, i) => {
-              const isVideo = item.src.startsWith("videos/");
+                    return isVideo ? (
+                      <video
+                        src={`/src/assets/multimedia/${current.src}`}
+                        controls
+                        autoPlay
+                        className="viewer__mediaEl"
+                      />
+                    ) : (
+                      <img
+                        src={`/src/assets/multimedia/${current.src}`}
+                        alt=""
+                        className="viewer__mediaEl"
+                      />
+                    );
+                  })()}
+                </div>
 
-              return (
                 <button
-                  key={item.id}
-                  className="window__thumb"
+                  className="viewer__btn viewer__btn--left"
                   type="button"
-                  onClick={() => openViewer(i)}
-                  aria-label={`Abrir ${item.id}`}>
-                  {isVideo ? (
-                    <video
-                      className="window__thumbMedia"
-                      src={`/src/assets/multimedia/${item.src}`}
-                      muted
-                      preload="metadata"
-                    />
-                  ) : (
-                    <img
-                      className="window__thumbMedia"
-                      src={`/src/assets/multimedia/${item.src}`}
-                      alt=""
-                      loading="lazy"
-                    />
-                  )}
+                  onPointerDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    prevItem();
+                  }}
+                  disabled={viewer.index === 0 || navLock}
+                  aria-label="Anterior">
+                  <LuChevronLeft />
                 </button>
-              );
-            })}
-          </div>
-        </section>
-      </div>
 
-      {viewer.open &&
-        createPortal(
-          <div className="viewer" aria-modal="true" role="dialog">
-            <div className="viewer__backdrop" onClick={closeViewer} />
+                <button
+                  className="viewer__btn viewer__btn--right"
+                  type="button"
+                  onPointerDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    nextItem();
+                  }}
+                  disabled={viewer.index === items.length - 1 || navLock}
+                  aria-label="Siguiente">
+                  <LuChevronRight />
+                </button>
 
-            <div className="viewer__content" role="document">
-              <div className="viewer__media">
-                {(() => {
-                  const current = items[viewer.index];
-                  const isVideo = current.src.startsWith("videos/");
-
-                  return isVideo ? (
-                    <video
-                      src={`/src/assets/multimedia/${current.src}`}
-                      controls
-                      autoPlay
-                      className="viewer__mediaEl"
-                    />
-                  ) : (
-                    <img
-                      src={`/src/assets/multimedia/${current.src}`}
-                      alt=""
-                      className="viewer__mediaEl"
-                    />
-                  );
-                })()}
+                <button
+                  className="viewer__btn viewer__btn--close"
+                  type="button"
+                  onPointerDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    closeViewer();
+                  }}
+                  aria-label="Cerrar">
+                  <LuX />
+                </button>
               </div>
-
-              <button
-                className="viewer__btn viewer__btn--left"
-                type="button"
-                onPointerDown={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  prevItem();
-                }}
-                disabled={viewer.index === 0 || navLock}
-                aria-label="Anterior">
-                <LuChevronLeft />
-              </button>
-
-              <button
-                className="viewer__btn viewer__btn--right"
-                type="button"
-                onPointerDown={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  nextItem();
-                }}
-                disabled={viewer.index === items.length - 1 || navLock}
-                aria-label="Siguiente">
-                <LuChevronRight />
-              </button>
-
-              <button
-                className="viewer__btn viewer__btn--close"
-                type="button"
-                onPointerDown={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  closeViewer();
-                }}
-                aria-label="Cerrar">
-                <LuX />
-              </button>
-            </div>
-          </div>,
-          document.body,
-        )}
+            </div>,
+            document.body,
+          )}
+      </div>
     </section>
   );
 }

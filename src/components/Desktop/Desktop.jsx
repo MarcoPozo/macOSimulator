@@ -19,33 +19,29 @@ export default function Desktop() {
     localStorage.setItem("wallpaper", src);
   };
 
-  /* Photos*/
-  const [photos, setPhotos] = useState({
-    open: false,
-    minimized: false,
-  });
+  /* Apps */
+  const [photos, setPhotos] = useState({ open: false, minimized: false });
+  const [settings, setSettings] = useState({ open: false, minimized: false });
 
-  const handleClosePhotos = () => {
-    setPhotos({ open: false, minimized: false });
+  /* Focus */
+  const [activeAppId, setActiveAppId] = useState(null);
+  const [zMap, setZMap] = useState({ photos: 1, settings: 2 });
+  const zSeedRef = useRef(3);
+
+  const focusApp = (appId) => {
+    setActiveAppId(appId);
+    setZMap((prev) => ({ ...prev, [appId]: zSeedRef.current++ }));
   };
 
-  const handleMinimizePhotos = () => {
+  /* Close y Minimize */
+  const handleClosePhotos = () => setPhotos({ open: false, minimized: false });
+  const handleMinimizePhotos = () =>
     setPhotos((prev) => (prev.open ? { ...prev, minimized: true } : prev));
-  };
 
-  /* Settings */
-  const [settings, setSettings] = useState({
-    open: false,
-    minimized: false,
-  });
-
-  const handleCloseSettings = () => {
+  const handleCloseSettings = () =>
     setSettings({ open: false, minimized: false });
-  };
-
-  const handleMinimizeSettings = () => {
+  const handleMinimizeSettings = () =>
     setSettings((prev) => (prev.open ? { ...prev, minimized: true } : prev));
-  };
 
   /* Dock */
   const handleDockClick = (appId) => {
@@ -55,6 +51,7 @@ export default function Desktop() {
         if (!prev.minimized) return { open: true, minimized: true };
         return { open: true, minimized: false };
       });
+      focusApp("photos");
     }
 
     if (appId === "settings") {
@@ -63,15 +60,15 @@ export default function Desktop() {
         if (!prev.minimized) return { open: true, minimized: true };
         return { open: true, minimized: false };
       });
+      focusApp("settings");
     }
   };
 
   return (
     <main
       className="desktop"
-      style={{
-        backgroundImage: `url(/src/assets/${wallpaper})`,
-      }}>
+      style={{ backgroundImage: `url(/src/assets/${wallpaper})` }}
+      onMouseDown={() => setActiveAppId(null)}>
       <MenuBar />
 
       <div className="desktop__stage" ref={stageRef}>
@@ -87,6 +84,9 @@ export default function Desktop() {
             minimized={photos.minimized}
             onClose={handleClosePhotos}
             onMinimize={handleMinimizePhotos}
+            isActive={activeAppId === "photos"}
+            zIndex={zMap.photos}
+            onFocus={() => focusApp("photos")}
           />
         )}
 
@@ -104,17 +104,14 @@ export default function Desktop() {
             onMinimize={handleMinimizeSettings}
             onSelectWallpaper={handleWallpaperChange}
             currentWallpaper={wallpaper}
+            isActive={activeAppId === "settings"}
+            zIndex={zMap.settings}
+            onFocus={() => focusApp("settings")}
           />
         )}
       </div>
 
-      <Dock
-        onItemClick={handleDockClick}
-        appState={{
-          photos,
-          settings,
-        }}
-      />
+      <Dock onItemClick={handleDockClick} appState={{ photos, settings }} />
     </main>
   );
 }
