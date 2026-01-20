@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
 import "./Desktop.css";
 
 import Dock from "../Dock/Dock.jsx";
-import MenuBar from "../MenuBar/MenuBar.jsx";
 import Window from "../Window/Window";
+import { useRef, useState } from "react";
+import MenuBar from "../MenuBar/MenuBar.jsx";
 import SettingsWindow from "../SettingsWindow/SettingsWindow";
 
 export default function Desktop() {
@@ -67,7 +67,7 @@ export default function Desktop() {
   return (
     <main
       className="desktop"
-      style={{ backgroundImage: `url(/src/assets/${wallpaper})` }}
+      style={{ backgroundImage: `url(/${wallpaper})` }}
       onMouseDown={() => setActiveAppId(null)}>
       <MenuBar />
 

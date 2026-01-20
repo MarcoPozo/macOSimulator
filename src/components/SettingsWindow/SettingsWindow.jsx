@@ -1,9 +1,8 @@
 import "../Window/Window.css";
 import "./SettingsWindow.css";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LuX, LuMinus, LuPlus } from "react-icons/lu";
 import { useWindowDrag } from "../../hooks/useWindowDrag";
-import wallpapers from "../../assets/wallpapers/wallpapers.json";
 
 export default function SettingsWindow({
   title = "Configuración",
@@ -30,7 +29,26 @@ export default function SettingsWindow({
     containerRef: stageRef,
   });
 
-  const items = useMemo(() => wallpapers ?? [], []);
+  const [wallpapers, setWallpapers] = useState([]);
+
+  useEffect(() => {
+    let alive = true;
+
+    fetch("/wallpapers/wallpapers.json")
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((data) => {
+        if (alive) setWallpapers(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {
+        if (alive) setWallpapers([]);
+      });
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const items = useMemo(() => wallpapers ?? [], [wallpapers]);
 
   return (
     <section
@@ -89,7 +107,6 @@ export default function SettingsWindow({
         </header>
 
         <div className="window__body">
-          {/* Sidebar */}
           <aside className="window__sidebar" aria-label="Secciones">
             <button
               type="button"
@@ -98,7 +115,6 @@ export default function SettingsWindow({
             </button>
           </aside>
 
-          {/* Content */}
           <section className="window__content">
             <div className="settings__grid">
               {items.map((wp) => {

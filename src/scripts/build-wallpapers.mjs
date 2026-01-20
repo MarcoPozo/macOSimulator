@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import sharp from "sharp";
 
-const DIR = path.resolve("src/assets/wallpapers");
+const DIR = path.resolve("public/wallpapers");
 const JSON_OUT = path.join(DIR, "wallpapers.json");
 
 const IMAGE_EXTS = new Set([

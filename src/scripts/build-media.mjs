@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import sharp from "sharp";
 
-const BASE = path.resolve("src/assets/multimedia");
+const BASE = path.resolve("public/multimedia");
 const PHOTOS_DIR = path.join(BASE, "photos");
 const VIDEOS_DIR = path.join(BASE, "videos");
 const OUT_JSON = path.join(BASE, "media.json");
@@ -48,7 +48,6 @@ async function processPhotos() {
 
   const tempNames = [];
 
-  let index = 1;
   for (const file of files) {
     const srcPath = path.join(PHOTOS_DIR, file);
     const ext = path.extname(file).toLowerCase();
@@ -63,7 +62,6 @@ async function processPhotos() {
     await sharp(srcPath).webp({ quality: 82 }).toFile(tmpPath);
 
     tempNames.push({ tmpPath, originalPath: srcPath });
-    index++;
   }
 
   for (const t of tempNames) {
@@ -152,9 +150,7 @@ async function main() {
   const data = { photos, videos };
 
   fs.writeFileSync(OUT_JSON, JSON.stringify(data, null, 2), "utf-8");
-  console.log(
-    `media.json generado: ${path.relative(process.cwd(), OUT_JSON)}`,
-  );
+  console.log(`media.json generado: ${path.relative(process.cwd(), OUT_JSON)}`);
   console.log(`Fotos: ${photos.length} | 🎬 videos: ${videos.length}`);
 }
 

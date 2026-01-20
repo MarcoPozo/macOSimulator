@@ -1,5 +1,5 @@
 import "./Window.css";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   LuX,
   LuMinus,
@@ -8,7 +8,6 @@ import {
   LuChevronRight,
 } from "react-icons/lu";
 import { createPortal } from "react-dom";
-import media from "../../assets/multimedia/media.json";
 import { useWindowDrag } from "../../hooks/useWindowDrag";
 
 const TABS = [
@@ -35,11 +34,35 @@ export default function Window({
   const [activeTab, setActiveTab] = useState("all");
   const [viewer, setViewer] = useState({ open: false, index: 0 });
 
+  const [media, setMedia] = useState({ photos: [], videos: [] });
+
+  useEffect(() => {
+    let alive = true;
+
+    fetch("/multimedia/media.json")
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((data) => {
+        if (!alive) return;
+
+        setMedia({
+          photos: Array.isArray(data?.photos) ? data.photos : [],
+          videos: Array.isArray(data?.videos) ? data.videos : [],
+        });
+      })
+      .catch(() => {
+        if (alive) setMedia({ photos: [], videos: [] });
+      });
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   const items = useMemo(() => {
     if (activeTab === "photos") return media.photos;
     if (activeTab === "videos") return media.videos;
     return [...media.photos, ...media.videos];
-  }, [activeTab]);
+  }, [activeTab, media.photos, media.videos]);
 
   const openViewer = (index) => setViewer({ open: true, index });
   const closeViewer = () => setViewer({ open: false, index: 0 });
@@ -126,7 +149,6 @@ export default function Window({
         </header>
 
         <div className="window__body">
-          {/* Sidebar */}
           <aside className="window__sidebar" aria-label="Secciones">
             {TABS.map((tab) => (
               <button
@@ -141,7 +163,6 @@ export default function Window({
             ))}
           </aside>
 
-          {/* Content */}
           <section className="window__content">
             <div className="window__grid">
               {items.map((item, i) => {
