@@ -1,5 +1,8 @@
 import "./Window.css";
+import { createPortal } from "react-dom";
 import { useEffect, useMemo, useState } from "react";
+
+import { useWindowDrag } from "../../hooks/useWindowDrag";
 import {
   LuX,
   LuMinus,
@@ -7,8 +10,6 @@ import {
   LuChevronLeft,
   LuChevronRight,
 } from "react-icons/lu";
-import { createPortal } from "react-dom";
-import { useWindowDrag } from "../../hooks/useWindowDrag";
 
 const TABS = [
   { id: "all", label: "Todo" },

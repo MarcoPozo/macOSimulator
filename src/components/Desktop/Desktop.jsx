@@ -1,8 +1,8 @@
 import "./Desktop.css";
+import { useRef, useState } from "react";
 
 import Dock from "../Dock/Dock.jsx";
 import Window from "../Window/Window";
-import { useRef, useState } from "react";
 import MenuBar from "../MenuBar/MenuBar.jsx";
 import SettingsWindow from "../SettingsWindow/SettingsWindow";
 

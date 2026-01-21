@@ -1,6 +1,7 @@
 import "../Window/Window.css";
 import "./SettingsWindow.css";
 import { useEffect, useMemo, useState } from "react";
+
 import { LuX, LuMinus, LuPlus } from "react-icons/lu";
 import { useWindowDrag } from "../../hooks/useWindowDrag";
 
