@@ -40,6 +40,7 @@ export default function Dock({ onItemClick, appState = {} }) {
 
         const itemClass = [
           "dockItem",
+          `dockItem--${item.id}`,
           isOpen && "dockItem--open",
           isMinimized && "dockItem--minimized",
         ]

@@ -159,9 +159,53 @@
   transform: translateX(-50%) translateY(-48px);
 }
 
-/* Responsive */
-@media screen and (max-width: 900px) {
+@media (max-width: 900px) {
   .dock {
-    border-radius: 20px;
+    max-width: 94vw;
+    white-space: nowrap;
+  }
+
+  .dockItem--calculator {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .dockItem--maps,
+  .dockItem--calculator,
+  .dockItem--notes,
+  .dockItem--siri {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .dockItem--terminal,
+  .dockItem--trash {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .dockItem--message,
+  .dockItem--music,
+  .dockItem--safari,
+  .dockItem--maps,
+  .dockItem--calculator,
+  .dockItem--notes,
+  .dockItem--siri,
+  .dockItem--terminal,
+  .dockItem--trash {
+    display: none;
+  }
+
+  .dock-tooltip {
+    display: none;
+  }
+}
+
+@media (max-width: 320px) {
+  .dock {
+    max-width: 96vw;
   }
 }
