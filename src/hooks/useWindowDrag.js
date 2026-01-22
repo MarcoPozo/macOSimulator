@@ -21,6 +21,7 @@ export function useWindowDrag({
   overflow = 30,
 
   containerRef = null,
+  disabled = false,
 } = {}) {
   const [pos, setPos] = useState({ x: initialX, y: initialY });
 
@@ -62,6 +63,7 @@ export function useWindowDrag({
 
   const onPointerMove = useCallback(
     (e) => {
+      if (disabled) return;
       if (!draggingRef.current) return;
       if (pointerIdRef.current !== e.pointerId) return;
 
@@ -70,26 +72,28 @@ export function useWindowDrag({
 
       setPos(clamp(originRef.current.x + dx, originRef.current.y + dy));
     },
-    [clamp],
+    [clamp, disabled],
   );
 
-  const endDrag = useCallback((e) => {
-    if (!draggingRef.current) return;
-    if (pointerIdRef.current !== e.pointerId) return;
+  const endDrag = useCallback(
+    (e) => {
+      if (disabled) return;
+      if (!draggingRef.current) return;
+      if (pointerIdRef.current !== e.pointerId) return;
 
-    draggingRef.current = false;
-    pointerIdRef.current = null;
+      draggingRef.current = false;
+      pointerIdRef.current = null;
 
-    const el = capturedElRef.current;
-    if (el?.releasePointerCapture) {
-      try {
-        el.releasePointerCapture(e.pointerId);
-      } catch {
-        console.log("Sin posición");
+      const el = capturedElRef.current;
+      if (el?.releasePointerCapture) {
+        try {
+          el.releasePointerCapture(e.pointerId);
+        } catch {}
       }
-    }
-    capturedElRef.current = null;
-  }, []);
+      capturedElRef.current = null;
+    },
+    [disabled],
+  );
 
   useEffect(() => {
     window.addEventListener("pointermove", onPointerMove);
@@ -105,6 +109,7 @@ export function useWindowDrag({
 
   const onPointerDown = useCallback(
     (e) => {
+      if (disabled) return;
       if (e.button !== undefined && e.button !== 0) return;
 
       draggingRef.current = true;
@@ -116,13 +121,13 @@ export function useWindowDrag({
       capturedElRef.current = e.currentTarget;
       e.currentTarget.setPointerCapture?.(e.pointerId);
     },
-    [pos.x, pos.y],
+    [pos.x, pos.y, disabled],
   );
 
   return {
     x: pos.x,
     y: pos.y,
-    bindTitlebar: { onPointerDown },
+    bindTitlebar: disabled ? {} : { onPointerDown },
     setPos,
   };
 }

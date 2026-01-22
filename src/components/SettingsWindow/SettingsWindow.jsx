@@ -5,6 +5,29 @@ import { useEffect, useMemo, useState } from "react";
 import { LuX, LuMinus, LuPlus } from "react-icons/lu";
 import { useWindowDrag } from "../../hooks/useWindowDrag";
 
+function useMediaQuery(query) {
+  const get = () =>
+    typeof window !== "undefined" && window.matchMedia(query).matches;
+
+  const [matches, setMatches] = useState(get);
+
+  useEffect(() => {
+    const m = window.matchMedia(query);
+    const onChange = () => setMatches(m.matches);
+
+    onChange();
+    if (m.addEventListener) m.addEventListener("change", onChange);
+    else m.addListener(onChange);
+
+    return () => {
+      if (m.removeEventListener) m.removeEventListener("change", onChange);
+      else m.removeListener(onChange);
+    };
+  }, [query]);
+
+  return matches;
+}
+
 export default function SettingsWindow({
   title = "Configuración",
   width = 560,
@@ -21,6 +44,8 @@ export default function SettingsWindow({
   zIndex = 1,
   onFocus,
 }) {
+  const isResponsive = useMediaQuery("(max-width: 600px)");
+
   const drag = useWindowDrag({
     initialX: x,
     initialY: y,
@@ -28,6 +53,7 @@ export default function SettingsWindow({
     edgePadding: 120,
     overflow: 30,
     containerRef: stageRef,
+    disabled: isResponsive,
   });
 
   const [wallpapers, setWallpapers] = useState([]);
@@ -51,17 +77,21 @@ export default function SettingsWindow({
 
   const items = useMemo(() => wallpapers ?? [], [wallpapers]);
 
-  return (
-    <section
-      className={`window ${minimized ? "window--minimized" : ""} ${
-        isActive ? "window--active" : "window--inactive"
-      }`}
-      style={{
+  const windowStyle = isResponsive
+    ? { zIndex }
+    : {
         width,
         height,
         zIndex,
         transform: `translate(${drag.x}px, ${drag.y}px)`,
-      }}
+      };
+
+  return (
+    <section
+      className={`window ${isResponsive ? "window--responsive" : ""} ${
+        minimized ? "window--minimized" : ""
+      } ${isActive ? "window--active" : "window--inactive"}`}
+      style={windowStyle}
       aria-label={`Ventana ${title}`}
       onMouseDown={(e) => {
         e.stopPropagation();

@@ -17,6 +17,29 @@ const TABS = [
   { id: "videos", label: "Videos" },
 ];
 
+function useMediaQuery(query) {
+  const get = () =>
+    typeof window !== "undefined" && window.matchMedia(query).matches;
+
+  const [matches, setMatches] = useState(get);
+
+  useEffect(() => {
+    const m = window.matchMedia(query);
+    const onChange = () => setMatches(m.matches);
+
+    onChange();
+    if (m.addEventListener) m.addEventListener("change", onChange);
+    else m.addListener(onChange);
+
+    return () => {
+      if (m.removeEventListener) m.removeEventListener("change", onChange);
+      else m.removeListener(onChange);
+    };
+  }, [query]);
+
+  return matches;
+}
+
 export default function Window({
   title = "Fotos",
   width = 560,
@@ -31,10 +54,11 @@ export default function Window({
   zIndex = 1,
   onFocus,
 }) {
+  const isResponsive = useMediaQuery("(max-width: 600px)");
+
   const [navLock, setNavLock] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [viewer, setViewer] = useState({ open: false, index: 0 });
-
   const [media, setMedia] = useState({ photos: [], videos: [] });
 
   useEffect(() => {
@@ -70,7 +94,6 @@ export default function Window({
 
   const prevItem = () => {
     if (navLock || viewer.index === 0) return;
-
     setNavLock(true);
     setViewer((v) => ({ ...v, index: v.index - 1 }));
     setTimeout(() => setNavLock(false), 120);
@@ -78,7 +101,6 @@ export default function Window({
 
   const nextItem = () => {
     if (navLock || viewer.index === items.length - 1) return;
-
     setNavLock(true);
     setViewer((v) => ({ ...v, index: v.index + 1 }));
     setTimeout(() => setNavLock(false), 120);
@@ -91,19 +113,24 @@ export default function Window({
     edgePadding: 120,
     overflow: 30,
     containerRef: stageRef,
+    disabled: isResponsive,
   });
 
-  return (
-    <section
-      className={`window ${minimized ? "window--minimized" : ""} ${
-        isActive ? "window--active" : "window--inactive"
-      }`}
-      style={{
+  const windowStyle = isResponsive
+    ? { zIndex }
+    : {
         width,
         height,
         zIndex,
         transform: `translate(${drag.x}px, ${drag.y}px)`,
-      }}
+      };
+
+  return (
+    <section
+      className={`window ${isResponsive ? "window--responsive" : ""} ${
+        minimized ? "window--minimized" : ""
+      } ${isActive ? "window--active" : "window--inactive"}`}
+      style={windowStyle}
       aria-label={`Ventana ${title}`}
       onMouseDown={(e) => {
         e.stopPropagation();
