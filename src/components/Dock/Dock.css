@@ -199,8 +199,12 @@
 }
 
 @media (max-width: 480px) {
-  .dockItem--message,
-  .dockItem--music,
+  .dock {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(59px, 1fr));
+  }
+
   .dockItem--safari,
   .dockItem--maps,
   .dockItem--calculator,
@@ -210,13 +214,28 @@
   .dockItem--trash {
     display: none;
   }
+
+  .dockItem--message,
+  .dockItem--music {
+    display: block;
+  }
 }
 
-@media (max-width: 375px) {
+@media (max-width: 400px) {
   .dock {
     width: 100%;
-    
+
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(59px, 1fr));
+  }
+
+  .dockItem--message {
+    display: none;
+  }
+}
+
+@media (max-width: 335px) {
+  .dockItem--music {
+    display: none;
   }
 }
