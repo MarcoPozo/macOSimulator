@@ -60,6 +60,8 @@ export default function Window({
   const [activeTab, setActiveTab] = useState("all");
   const [viewer, setViewer] = useState({ open: false, index: 0 });
   const [media, setMedia] = useState({ photos: [], videos: [] });
+  const [isMaximized, setIsMaximized] = useState(false);
+  const [restore, setRestore] = useState({ x, y, width, height });
 
   useEffect(() => {
     let alive = true;
@@ -114,22 +116,73 @@ export default function Window({
     overflow: 30,
     containerRef: stageRef,
     disabled: isResponsive,
+    onStart: (e) => {
+      if (!isMaximized) return;
+      setIsMaximized(false);
+      const nextX = Math.max(0, e.clientX - restore.width / 2);
+      const nextY = Math.max(0, e.clientY - 18);
+      drag.setPos({ x: nextX, y: nextY });
+    },
   });
+
+  const toggleMaximize = () => {
+    if (isResponsive) return;
+
+    setIsMaximized((v) => {
+      const next = !v;
+
+      if (!v) {
+        setRestore({
+          x: drag.x,
+          y: drag.y,
+          width,
+          height,
+        });
+      } else {
+        drag.setPos({ x: restore.x, y: restore.y });
+      }
+
+      return next;
+    });
+  };
+
+  const onTitlebarPointerDown = (e) => {
+    if (e.button !== undefined && e.button !== 0) return;
+    if (isResponsive) return;
+
+    if (isMaximized) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const grabX = e.clientX - rect.left;
+      const grabY = e.clientY - rect.top;
+      setIsMaximized(false);
+      const nextX = Math.max(0, e.clientX - grabX);
+      const nextY = Math.max(0, e.clientY - grabY);
+      drag.setPos({ x: nextX, y: nextY });
+      drag.bindTitlebar.onPointerDown(e);
+      return;
+    }
+
+    drag.bindTitlebar.onPointerDown(e);
+  };
 
   const windowStyle = isResponsive
     ? { zIndex }
-    : {
-        width,
-        height,
-        zIndex,
-        transform: `translate(${drag.x}px, ${drag.y}px)`,
-      };
+    : isMaximized
+      ? { zIndex }
+      : {
+          width,
+          height,
+          zIndex,
+          transform: `translate(${drag.x}px, ${drag.y}px)`,
+        };
 
   return (
     <section
       className={`window ${isResponsive ? "window--responsive" : ""} ${
         minimized ? "window--minimized" : ""
-      } ${isActive ? "window--active" : "window--inactive"}`}
+      } ${isMaximized ? "window--maximized" : ""} ${
+        isActive ? "window--active" : "window--inactive"
+      }`}
       style={windowStyle}
       aria-label={`Ventana ${title}`}
       onMouseDown={(e) => {
@@ -137,7 +190,9 @@ export default function Window({
         onFocus?.();
       }}>
       <div className="window__frame">
-        <header className="window__titlebar" {...drag.bindTitlebar}>
+        <header
+          className="window__titlebar"
+          onPointerDown={onTitlebarPointerDown}>
           <div className="window__traffic">
             <button
               className="window__dotBtn window__dotBtn--red"
@@ -166,8 +221,12 @@ export default function Window({
             <button
               className="window__dotBtn window__dotBtn--green"
               type="button"
-              aria-label="Maximizar"
-              onPointerDown={(e) => e.stopPropagation()}>
+              aria-label={isMaximized ? "Restaurar" : "Maximizar"}
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleMaximize();
+              }}>
               <LuPlus className="window__dotIcon" />
             </button>
           </div>

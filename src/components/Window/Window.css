@@ -413,6 +413,19 @@
   }
 }
 
+.window--maximized {
+  position: fixed;
+  top: var(--menubar-height);
+  left: 0;
+  right: 0;
+
+  width: 100% !important;
+  height: calc(100% - 88px - var(--menubar-height));
+
+  transform: none !important;
+  border-radius: 0;
+}
+
 /* Minimize */
 .window--minimized {
   display: none;

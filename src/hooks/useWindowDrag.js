@@ -22,8 +22,15 @@ export function useWindowDrag({
 
   containerRef = null,
   disabled = false,
+  onStart,
 } = {}) {
-  const [pos, setPos] = useState({ x: initialX, y: initialY });
+  const [pos, _setPos] = useState({ x: initialX, y: initialY });
+  const posRef = useRef({ x: initialX, y: initialY });
+
+  const setPos = useCallback((next) => {
+    posRef.current = next;
+    _setPos(next);
+  }, []);
 
   const draggingRef = useRef(false);
   const pointerIdRef = useRef(null);
@@ -63,7 +70,6 @@ export function useWindowDrag({
 
   const onPointerMove = useCallback(
     (e) => {
-      if (disabled) return;
       if (!draggingRef.current) return;
       if (pointerIdRef.current !== e.pointerId) return;
 
@@ -72,28 +78,24 @@ export function useWindowDrag({
 
       setPos(clamp(originRef.current.x + dx, originRef.current.y + dy));
     },
-    [clamp, disabled],
+    [clamp],
   );
 
-  const endDrag = useCallback(
-    (e) => {
-      if (disabled) return;
-      if (!draggingRef.current) return;
-      if (pointerIdRef.current !== e.pointerId) return;
+  const endDrag = useCallback((e) => {
+    if (!draggingRef.current) return;
+    if (pointerIdRef.current !== e.pointerId) return;
 
-      draggingRef.current = false;
-      pointerIdRef.current = null;
+    draggingRef.current = false;
+    pointerIdRef.current = null;
 
-      const el = capturedElRef.current;
-      if (el?.releasePointerCapture) {
-        try {
-          el.releasePointerCapture(e.pointerId);
-        } catch {}
-      }
-      capturedElRef.current = null;
-    },
-    [disabled],
-  );
+    const el = capturedElRef.current;
+    if (el?.releasePointerCapture) {
+      try {
+        el.releasePointerCapture(e.pointerId);
+      } catch {}
+    }
+    capturedElRef.current = null;
+  }, []);
 
   useEffect(() => {
     window.addEventListener("pointermove", onPointerMove);
@@ -112,22 +114,19 @@ export function useWindowDrag({
       if (disabled) return;
       if (e.button !== undefined && e.button !== 0) return;
 
+      onStart?.(e);
+
       draggingRef.current = true;
       pointerIdRef.current = e.pointerId;
 
       startRef.current = { x: e.clientX, y: e.clientY };
-      originRef.current = { x: pos.x, y: pos.y };
+      originRef.current = { x: posRef.current.x, y: posRef.current.y };
 
       capturedElRef.current = e.currentTarget;
       e.currentTarget.setPointerCapture?.(e.pointerId);
     },
-    [pos.x, pos.y, disabled],
+    [disabled, onStart],
   );
 
-  return {
-    x: pos.x,
-    y: pos.y,
-    bindTitlebar: disabled ? {} : { onPointerDown },
-    setPos,
-  };
+  return { x: pos.x, y: pos.y, bindTitlebar: { onPointerDown }, setPos };
 }
