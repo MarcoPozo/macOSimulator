@@ -214,10 +214,9 @@
 
 @media (max-width: 375px) {
   .dock {
-    width: calc(100%);
+    width: 100%;
     
     display: grid;
-    grid-auto-columns: 180px;
     grid-template-columns: repeat(auto-fit, minmax(59px, 1fr));
   }
 }
