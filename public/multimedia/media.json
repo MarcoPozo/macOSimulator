@@ -11,10 +11,6 @@
     {
       "id": "p3",
       "src": "photos/0003.webp"
-    },
-    {
-      "id": "p4",
-      "src": "photos/0004.webp"
     }
   ],
   "videos": [
@@ -25,6 +21,10 @@
     {
       "id": "v2",
       "src": "videos/0002.mp4"
+    },
+    {
+      "id": "v3",
+      "src": "videos/0003.mp4"
     }
   ]
 }
