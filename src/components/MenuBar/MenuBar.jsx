@@ -4,8 +4,16 @@ import { useEffect, useMemo, useState } from "react";
 import appleIcon from "../../assets/icons/menubar/apple-icon.webp";
 import controlCenter from "../../assets/icons/menubar/control-center.webp";
 
-function formatDateTime(date) {
+function formatDateTime(date, compact = false) {
   const locale = "es-EC";
+
+  if (compact) {
+    return new Intl.DateTimeFormat(locale, {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(date);
+  }
 
   const parts = new Intl.DateTimeFormat(locale, {
     weekday: "short",
@@ -31,7 +39,14 @@ export default function MenuBar() {
     return () => clearInterval(t);
   }, []);
 
-  const label = useMemo(() => formatDateTime(now), [now]);
+  const isCompact = useMemo(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 480px)").matches,
+    [],
+  );
+
+  const label = useMemo(() => formatDateTime(now, isCompact), [now, isCompact]);
   const batteryPct = 100;
 
   return (
